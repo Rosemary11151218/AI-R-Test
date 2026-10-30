@@ -374,10 +374,10 @@
             `;
         }
 
-        // ================= 静默发送数据 (Web3Forms) =================
+        // ================= 静默发送数据 (Web3Forms - 已更新密钥) =================
         function submitScaleData() {
             const formData = {
-                access_key: "2f37f6dc-684c-48f5-804b-38ffdb29ce2f",
+                access_key: "efd4d1ac-bcaf-4a72-80a5-64084eefc45b",
                 subject: "AI依赖症与注意力测评数据",
                 from_name: document.getElementById('input-name').value.trim(),
                 姓名: document.getElementById('input-name').value.trim(),
@@ -388,9 +388,12 @@
                 注意力得分: window.stroopScore,
                 注意力用时秒: window.stroopTime
             };
-            // 扁平化量表数据
+            // 扁平化量表数据并修正编号
             Object.keys(scaleScores).forEach((key) => {
-                formData[`量表_第${key.replace('s-', '')}题`] = scaleScores[key];
+                // 将索引从0开始改为1开始，并补齐两位（如 A01, A02）以确保排序正确
+                const humanIndex = parseInt(key.replace('s-', '')) + 1;
+                const prefix = humanIndex < 10 ? `A0${humanIndex}` : `A${humanIndex}`;
+                formData[`量表_第${prefix}题`] = scaleScores[key];
             });
 
             // 双通道提交（Fetch优先，失败降级Form提交）
