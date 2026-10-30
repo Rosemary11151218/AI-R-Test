@@ -3,44 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI依赖症自我测评</title>
+    <title>AI依赖症与注意力自我测评</title>
     <style>
         /* 全局基础样式 */
-        body {
-            margin: 0; padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #1e1e30; color: #ffffff;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh;
-        }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: #1e1e30; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .container { width: 100%; max-width: 600px; padding: 40px 20px; box-sizing: border-box; text-align: center; margin: 0 auto; }
-
-        /* 页面切换控制 */
         .page { display: none; animation: fadeIn 0.4s ease-out; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* P1 首页样式 */
+        /* 页面通用标题与按钮 */
         .header-text { color: #8a8a9d; font-size: 14px; letter-spacing: 1px; margin-bottom: 30px; }
-        .main-title { font-size: 46px; font-weight: bold; margin: 0 0 15px 0; line-height: 1.1; text-align: left; }
-        .highlight { color: #d4b848; }
-        .subtitle { font-size: 16px; color: #b0b0c0; margin: 10px 0 60px 0; line-height: 1.6; text-align: left; }
-
-        /* 按钮通用样式 */
-        .btn-next { background-color: #3a3a52; color: white; border: none; padding: 16px 40px; font-size: 16px; border-radius: 30px; cursor: pointer; margin-top: 20px; width: 100%; transition: background-color 0.3s; }
+        .page-title { font-size: 22px; font-weight: bold; margin-bottom: 30px; }
+        .subtitle { font-size: 16px; color: #b0b0c0; line-height: 1.8; margin-bottom: 40px; }
+        
+        .btn-next { background-color: #3a3a52; color: white; border: none; padding: 16px 40px; font-size: 16px; border-radius: 30px; cursor: pointer; margin-top: 20px; width: 100%; transition: all 0.3s; }
         .btn-next:hover { background-color: #505070; }
 
+        /* 首页特别样式 */
+        .main-title { font-size: 46px; font-weight: bold; margin: 0 0 15px 0; line-height: 1.1; text-align: left; }
+        .highlight { color: #d4b848; }
+
         /* 填写信息页样式 */
-        .form-title { font-size: 22px; margin-bottom: 40px; }
         .form-group { margin-bottom: 25px; text-align: left; }
         .form-group label { display: block; margin-bottom: 8px; color: #b0b0c0; font-size: 14px; }
         .form-group input { width: 100%; padding: 15px; background-color: #2a2a40; border: 1px solid #3a3a52; border-radius: 8px; color: white; font-size: 16px; box-sizing: border-box; outline: none; transition: border-color 0.3s; }
         .form-group input:focus { border-color: #d4b848; }
 
-        /* P2 测评页样式 */
-        .page-title { font-size: 22px; margin-bottom: 30px; text-align: center; }
-        .option-list { list-style: none; padding: 0; margin: 0 0 40px 0; }
-        .option-item { background-color: #2a2a40; border: 1px solid #3a3a52; border-radius: 12px; margin-bottom: 12px; padding: 18px 20px; cursor: pointer; display: flex; align-items: center; transition: all 0.3s; text-align: left; }
+        /* 选项列表样式 (P4) */
+        .option-list { list-style: none; padding: 0; margin: 0 0 40px 0; text-align: left; }
+        .option-item { background-color: #2a2a40; border: 1px solid #3a3a52; border-radius: 12px; margin-bottom: 12px; padding: 18px 20px; cursor: pointer; display: flex; align-items: center; transition: all 0.3s; }
         .option-item:hover { background-color: #3a3a52; }
         .option-item.selected { background-color: #3a3a52; border-color: #d4b848; }
         .option-number { font-size: 14px; color: #d4b848; margin-right: 15px; font-weight: bold; min-width: 25px; }
@@ -51,34 +43,43 @@
         .option-item.selected .checkbox-mark { background-color: #d4b848; border-color: #d4b848; }
         .option-item.selected .checkbox-mark::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #1e1e30; font-size: 14px; font-weight: bold; }
 
-        /* 量表页样式（修复了换行显示和按钮对齐） */
+        /* 量表页样式 (P5) */
         .scale-instruction { font-size: 13px; color: #8a8a9d; margin-bottom: 30px; text-align: left; line-height: 1.8; background-color: #2a2a40; padding: 20px; border-radius: 12px; border: 1px solid #3a3a52; }
-        .scale-item { margin-bottom: 35px; }
-        .scale-item:last-child { margin-bottom: 0; }
+        .scale-item { margin-bottom: 35px; text-align: left; }
         .scale-item-text { font-size: 15px; color: #dcdcdc; line-height: 1.6; margin-bottom: 15px; }
         .scale-options { display: flex; justify-content: space-between; gap: 5px; }
         .scale-option { flex: 1; background-color: #3a3a52; border: 2px solid #505070; border-radius: 8px; padding: 8px 0; text-align: center; cursor: pointer; transition: all 0.3s; font-size: 14px; color: #b0b0c0; }
         .scale-option:hover { background-color: #505070; }
         .scale-option.selected { background-color: #d4b848; border-color: #d4b848; color: #1e1e30; font-weight: bold; }
-        .scale-option-label { flex: 1; font-size: 11px; color: #8a8a9d; text-align: center; }
+        .scale-option-label { flex: 1; font-size: 11px; color: #8a8a9d; text-align: center; margin-top: 8px; }
 
-        /* P3 结果页样式 */
-        .result-box { background-color: #2a2a40; border-radius: 16px; padding: 40px 30px; text-align: center; margin-top: 20px; }
+        /* 结果页样式 (P6) */
+        .result-box { background-color: #2a2a40; border-radius: 16px; padding: 40px 30px; text-align: center; margin-bottom: 20px; }
         .result-count { font-size: 24px; margin-bottom: 10px; }
         .result-role { font-size: 24px; font-weight: bold; color: white; margin-bottom: 20px; }
         .result-desc { font-size: 16px; color: #b0b0c0; line-height: 1.8; }
-        .disclaimer { font-size: 12px; color: #7a7a8d; margin-top: 50px; margin-bottom: 30px; }
-
-        /* 结果颜色主题 */
+        .disclaimer { font-size: 12px; color: #7a7a8d; margin-top: 20px; margin-bottom: 30px; }
         .theme-green .result-count { color: #4ade80; } .theme-green .result-box { border-top: 5px solid #4ade80; }
         .theme-blue .result-count { color: #60a5fa; } .theme-blue .result-box { border-top: 5px solid #60a5fa; }
         .theme-red .result-count { color: #f87171; } .theme-red .result-box { border-top: 5px solid #f87171; }
+        .theme-purple .result-count { color: #c084fc; } .theme-purple .result-box { border-top: 5px solid #c084fc; }
+
+        /* 注意力测试 (Stroop) 样式 (P3) */
+        .stroop-word { font-size: 48px; font-weight: bold; margin: 60px 0; letter-spacing: 5px; }
+        .stroop-progress { font-size: 14px; color: #8a8a9d; margin-bottom: 20px; }
+        .stroop-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; margin: 0 auto; }
+        .stroop-btn { padding: 15px; border-radius: 12px; border: none; font-size: 18px; font-weight: bold; color: #1e1e30; cursor: pointer; transition: transform 0.1s; }
+        .stroop-btn:active { transform: scale(0.95); }
+        .btn-red { background-color: #f87171; }
+        .btn-blue { background-color: #60a5fa; }
+        .btn-green { background-color: #4ade80; }
+        .btn-yellow { background-color: #facc15; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- P1: 首页 -->
+        <!-- P1: AI依赖测试封面 -->
         <div id="page-1" class="page active">
             <div class="header-text">AI 心理安全 · 自我测评</div>
             <h1 class="main-title">你有<br><span class="highlight">AI依赖症</span><br>吗？</h1>
@@ -88,30 +89,45 @@
 
         <!-- 填写信息页 -->
         <div id="page-form" class="page">
-            <h2 class="form-title">请填写您的信息</h2>
-            <div class="form-group">
-                <label>姓名</label>
-                <input type="text" id="input-name" placeholder="请输入您的姓名">
-            </div>
-            <div class="form-group">
-                <label>手机号后四位</label>
-                <input type="text" id="input-phone" placeholder="请输入手机号后4位" maxlength="4">
-            </div>
-            <div class="form-group">
-                <label>学号</label>
-                <input type="text" id="input-id" placeholder="请输入您的学号">
-            </div>
+            <h2 class="page-title">请填写您的信息</h2>
+            <div class="form-group"><label>姓名</label><input type="text" id="input-name" placeholder="请输入您的姓名"></div>
+            <div class="form-group"><label>手机号后四位</label><input type="text" id="input-phone" placeholder="请输入手机号后4位" maxlength="4"></div>
+            <div class="form-group"><label>学号</label><input type="text" id="input-id" placeholder="请输入您的学号"></div>
             <button class="btn-next" onclick="submitForm()">下一页</button>
         </div>
 
-        <!-- P2: 测评页 -->
+        <!-- P2: 注意力测试引导页 -->
+        <div id="page-intro" class="page">
+            <h2 class="page-title" style="color: #d4b848;">看看AI使用对你的<br>注意力造成了怎样的影响</h2>
+            <div class="subtitle">
+                下面将进行一项经典的<span style="color: #60a5fa;">斯特鲁普注意力测试</span>。<br><br>
+                规则很简单：屏幕上会显示一个表示颜色的文字（比如用红色写的"蓝"字），<br>请你点击<span style="color: #f87171; font-weight: bold;">文字实际显示的颜色</span>，而不是文字本身的含义。<br><br>
+                例如：用红色写的"蓝"字 → 应该点红色按钮。<br><br>
+                共有20道题，请尽量快速准确地作答。<br>做完后会自动进入后面的测评环节。
+            </div>
+            <button class="btn-next" onclick="startStroopTest()">开始测试</button>
+        </div>
+
+        <!-- P3: 注意力测试交互页 (Stroop Test) -->
+        <div id="page-stroop" class="page">
+            <div class="stroop-progress">进度: <span id="stroop-current">1</span> / 20</div>
+            <div class="stroop-word" id="stroop-text">红</div>
+            <div class="stroop-buttons">
+                <button class="stroop-btn btn-red" onclick="answerStroop('红')">红</button>
+                <button class="stroop-btn btn-blue" onclick="answerStroop('蓝')">蓝</button>
+                <button class="stroop-btn btn-green" onclick="answerStroop('绿')">绿</button>
+                <button class="stroop-btn btn-yellow" onclick="answerStroop('黄')">黄</button>
+            </div>
+        </div>
+
+        <!-- P4: AI依赖 6条勾选 -->
         <div id="page-2" class="page">
             <h2 class="page-title">对照看看，你中了几条</h2>
             <ul class="option-list" id="quiz-options"></ul>
             <button class="btn-next" onclick="goToPage('scale')">下一页</button>
         </div>
 
-        <!-- 量表评分页 -->
+        <!-- P5: 36题量表评分 -->
         <div id="page-scale" class="page">
             <h2 class="page-title">请根据您的实际感受评分</h2>
             <div class="scale-instruction">
@@ -122,16 +138,17 @@
             <button class="btn-next" onclick="submitScaleData()">查看结果</button>
         </div>
 
-        <!-- P3: 结果页 -->
+        <!-- P6: 最终结果页 -->
         <div id="page-3" class="page">
-            <div id="result-container"></div>
-            <div class="disclaimer">注：CAIDS为研究工具，非临床诊断量表</div>
+            <div id="result-stroop-container"></div>
+            <div id="result-ai-container"></div>
+            <div class="disclaimer">注：本测评结果仅供自我探索与学术研究参考，非临床诊断依据。</div>
             <button class="btn-next" onclick="location.reload()">重新测试</button>
         </div>
     </div>
 
     <script>
-        // 测评选项数据
+        // ================= 测评选项数据 (P4) =================
         const quizData = [
             { id: 1, title: "情感依赖", desc: "情绪困扰时，第一反应是找AI倾诉" },
             { id: 2, title: "社交替代", desc: "和AI的对话，比和真实朋友聊更放松" },
@@ -140,21 +157,10 @@
             { id: 5, title: "戒断反应", desc: "无法使用AI时，感到焦虑或不安" },
             { id: 6, title: "关系幻化", desc: "有时觉得AI真的理解自己、在乎自己" }
         ];
-
         let selectedOptions = new Set();
 
-        // 量表标签数据（修复了换行显示问题，直接写成HTML换行）
-        const scaleLabels = [
-            "完全<br>不符合",
-            "比较<br>不符合",
-            "有点<br>不符合",
-            "不确定",
-            "有点<br>符合",
-            "比较<br>符合",
-            "完全<br>符合"
-        ];
-
-        // 量表条目数据（36题）
+        // ================= 量表数据 (P5) =================
+        const scaleLabels = ["完全<br>不符合", "比较<br>不符合", "有点<br>不符合", "不确定", "有点<br>符合", "比较<br>符合", "完全<br>符合"];
         const scales = [
             "AI为我提供了一个在与他人沟通时可以效仿的良好范式。",
             "AI通过自身的情绪回应方式为我做出了示范。",
@@ -193,16 +199,41 @@
             "AI给出的回答体现了我的理想自我。",
             "AI提供的建议与我的理想自我形象整体一致。"
         ];
-
         let scaleScores = {};
 
-        // 页面初始化
-        function init() {
+        // ================= 注意力测试变量 =================
+        const stroopColors = [
+            { name: '红', code: '#f87171' },
+            { name: '蓝', code: '#60a5fa' },
+            { name: '绿', code: '#4ade80' },
+            { name: '黄', code: '#facc15' }
+        ];
+        let currentTrial = 0;
+        const totalTrials = 20;
+        let correctAnswers = 0;
+        let startTime = 0;
+        let currentColorName = ''; // 当前文字实际显示的颜色名称
+
+        // ================= 页面跳转逻辑 =================
+        function goToPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                // 如果是结果页，渲染所有结果
+                if (pageId === '3') {
+                    renderAllResults();
+                }
+            }
+        }
+
+        // ================= 初始化所有页面 DOM =================
+        function initApp() {
             initQuiz();
             initScales();
         }
 
-        // 初始化P2选项
+        // 初始化 P4 选项
         function initQuiz() {
             const listContainer = document.getElementById('quiz-options');
             listContainer.innerHTML = '';
@@ -222,7 +253,6 @@
             });
         }
 
-        // 切换选项选中状态
         function toggleOption(id, element) {
             if (selectedOptions.has(id)) {
                 selectedOptions.delete(id);
@@ -233,156 +263,159 @@
             }
         }
 
-        // 初始化量表页
+        // 初始化 P5 量表
         function initScales() {
             const container = document.getElementById('scale-container');
             container.innerHTML = '';
-            
             scales.forEach((text, itemIndex) => {
                 const uniqueKey = `s-${itemIndex}`;
                 const div = document.createElement('div');
                 div.className = 'scale-item';
-                
                 div.innerHTML = `
                     <div class="scale-item-text">${text}</div>
                     <div class="scale-options">
-                        ${[1, 2, 3, 4, 5, 6, 7].map(score => `
-                            <div class="scale-option" onclick="selectScale('${uniqueKey}', ${score}, this)">
-                                ${score}
-                            </div>
-                        `).join('')}
+                        ${[1, 2, 3, 4, 5, 6, 7].map(score => `<div class="scale-option" onclick="selectScale('${uniqueKey}', ${score}, this)">${score}</div>`).join('')}
                     </div>
-                    <div class="scale-options" style="margin-top: 8px;">
-                        ${scaleLabels.map(label => `
-                            <div class="scale-option-label">${label}</div>
-                        `).join('')}
+                    <div class="scale-options">
+                        ${scaleLabels.map(label => `<div class="scale-option-label">${label}</div>`).join('')}
                     </div>
                 `;
-                
                 container.appendChild(div);
             });
         }
 
-        // 选择量表分数
         function selectScale(key, score, element) {
             scaleScores[key] = score;
             const parent = element.parentElement;
-            const options = parent.querySelectorAll('.scale-option');
-            options.forEach(opt => opt.classList.remove('selected'));
+            parent.querySelectorAll('.scale-option').forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
         }
 
-        // 页面跳转
-        function goToPage(pageNum) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            const targetPage = document.getElementById(`page-${pageNum}`);
-            if (targetPage) {
-                targetPage.classList.add('active');
-                if (pageNum === '3') {
-                    renderResult();
-                }
-            }
-        }
-
-        // 提交表单验证
+        // 提交 P4 之前的表单验证
         function submitForm() {
             const name = document.getElementById('input-name').value.trim();
             const phone = document.getElementById('input-phone').value.trim();
             const studentId = document.getElementById('input-id').value.trim();
-
-            if (!name || !phone || !studentId) {
-                alert('请完整填写姓名、手机号后四位和学号。');
-                return;
-            }
-            if (phone.length !== 4 || isNaN(phone)) {
-                alert('请准确输入手机号后4位数字。');
-                return;
-            }
-            goToPage('2');
+            if (!name || !phone || !studentId) { alert('请完整填写姓名、手机号后四位和学号。'); return; }
+            if (phone.length !== 4 || isNaN(phone)) { alert('请准确输入手机号后4位数字。'); return; }
+            goToPage('intro'); // 跳转到注意力测试引导页
         }
 
-        // 提交量表数据到 Web3Forms 并跳转结果页
+        // ================= 注意力测试逻辑 =================
+        function startStroopTest() {
+            currentTrial = 0;
+            correctAnswers = 0;
+            startTime = new Date().getTime();
+            generateNextTrial();
+            goToPage('stroop');
+        }
+
+        function generateNextTrial() {
+            if (currentTrial >= totalTrials) {
+                finishStroop();
+                return;
+            }
+            // 随机生成文字和颜色
+            const word = stroopColors[Math.floor(Math.random() * stroopColors.length)];
+            const color = stroopColors[Math.floor(Math.random() * stroopColors.length)];
+            currentColorName = color.name;
+            
+            const textElement = document.getElementById('stroop-text');
+            textElement.textContent = word.name;
+            textElement.style.color = color.code;
+            document.getElementById('stroop-current').textContent = currentTrial + 1;
+        }
+
+        function answerStroop(colorName) {
+            if (colorName === currentColorName) {
+                correctAnswers++;
+            }
+            currentTrial++;
+            generateNextTrial();
+        }
+
+        function finishStroop() {
+            window.stroopScore = correctAnswers;
+            window.stroopTime = Math.floor((new Date().getTime() - startTime) / 1000);
+            goToPage('2'); // 测试结束后跳转到 AI 6条勾选页
+        }
+
+        // ================= 结果渲染 =================
+        function renderAllResults() {
+            // 1. 渲染注意力测试结果
+            const stroopContainer = document.getElementById('result-stroop-container');
+            let stroopLevel = '', stroopDesc = '', themeClass = '';
+            if (window.stroopScore >= 18) { themeClass = 'theme-green'; stroopLevel = '优秀'; stroopDesc = `你的抗干扰能力很强，注意力不易被分散。`; }
+            else if (window.stroopScore >= 14) { themeClass = 'theme-blue'; stroopLevel = '良好'; stroopDesc = `你的注意力处于正常水平，偶尔会被分心。`; }
+            else { themeClass = 'theme-red'; stroopLevel = '容易分心'; stroopDesc = `你的注意力容易受到干扰，建议适度减少AI碎片化使用。`; }
+            
+            stroopContainer.innerHTML = `
+                <div class="result-box ${themeClass}">
+                    <div class="result-count">注意力测试</div>
+                    <div class="result-role">${stroopLevel}（答对 ${window.stroopScore} 题 / 用时 ${window.stroopTime} 秒）</div>
+                    <div class="result-desc">${stroopDesc}</div>
+                </div>
+            `;
+
+            // 2. 渲染AI依赖结果
+            const aiContainer = document.getElementById('result-ai-container');
+            const count = selectedOptions.size;
+            let aiLevel = '', aiDesc = '', aiThemeClass = '';
+            if (count >= 0 && count <= 2) { aiThemeClass = 'theme-green'; aiLevel = '工具型使用者'; aiDesc = 'AI对你来说是效率工具。<br>使用清醒，边界清晰。'; }
+            else if (count >= 3 && count <= 4) { aiThemeClass = 'theme-blue'; aiLevel = '边界模糊者'; aiDesc = '开始出现情感卷入。<br>尚可调整，值得留意。'; }
+            else { aiThemeClass = 'theme-red'; aiLevel = '高依赖风险者'; aiDesc = 'AI已经嵌入情绪调节系统。<br>需要有意识地「制造摩擦」。'; }
+
+            aiContainer.innerHTML = `
+                <div class="result-box ${aiThemeClass}">
+                    <div class="result-count">AI依赖测评</div>
+                    <div class="result-role">${aiLevel}（匹配 ${count} 条）</div>
+                    <div class="result-desc">${aiDesc}</div>
+                </div>
+            `;
+        }
+
+        // ================= 静默发送数据 (Web3Forms) =================
         function submitScaleData() {
-            // 收集所有数据
             const formData = {
                 access_key: "2f37f6dc-684c-48f5-804b-38ffdb29ce2f",
-                subject: "AI依赖症测评新数据",
+                subject: "AI依赖症与注意力测评数据",
                 from_name: document.getElementById('input-name').value.trim(),
                 姓名: document.getElementById('input-name').value.trim(),
                 手机号后四位: document.getElementById('input-phone').value.trim(),
                 学号: document.getElementById('input-id').value.trim(),
-                勾选结果: Array.from(selectedOptions).join('、'),
-                勾选数量: selectedOptions.size
+                勾选结果: Array.from(selectedOptions).map(id => quizData.find(q => q.id === id).title).join('、'),
+                勾选数量: selectedOptions.size,
+                注意力得分: window.stroopScore,
+                注意力用时秒: window.stroopTime
             };
-
-            // 将量表评分加入表单数据（按序号命名 s_1 ~ s_36）
+            // 扁平化量表数据
             Object.keys(scaleScores).forEach((key) => {
-                formData[key.replace('s-', '量表_')] = scaleScores[key];
+                formData[`量表_第${key.replace('s-', '')}题`] = scaleScores[key];
             });
 
-            // 后台静默提交（优先使用 fetch，失败则降级为 form 表单）
+            // 双通道提交（Fetch优先，失败降级Form提交）
             fetch("https://api.web3forms.com/submit", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
                 body: JSON.stringify(formData)
             }).catch(() => {
-                // 如果 fetch 失败（如某些网络环境下），自动创建隐藏表单降级提交
                 const form = document.createElement("form");
-                form.method = "POST";
-                form.action = "https://api.web3forms.com/submit";
-                form.target = "web3frame";
-                form.style.display = "none";
-                
+                form.method = "POST"; form.action = "https://api.web3forms.com/submit"; form.target = "web3frame"; form.style.display = "none";
                 Object.keys(formData).forEach(key => {
-                    const input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = key;
-                    input.value = formData[key];
-                    form.appendChild(input);
+                    const input = document.createElement("input"); input.type = "hidden"; input.name = key; input.value = formData[key]; form.appendChild(input);
                 });
-
                 document.body.appendChild(form);
-                
                 if(!document.getElementById("web3frame")) {
-                    const iframe = document.createElement("iframe");
-                    iframe.name = "web3frame";
-                    iframe.id = "web3frame";
-                    iframe.style.display = "none";
-                    document.body.appendChild(iframe);
+                    const iframe = document.createElement("iframe"); iframe.name = "web3frame"; iframe.id = "web3frame"; iframe.style.display = "none"; document.body.appendChild(iframe);
                 }
-                
                 form.submit();
             }).finally(() => {
-                // 无论发送成功与否，立刻跳转到结果页，不打断被试体验
-                goToPage('3');
+                goToPage('3'); // 无论发送是否成功，立即跳转结果页
             });
         }
 
-        // 渲染结果
-        function renderResult() {
-            const count = selectedOptions.size;
-            const container = document.getElementById('result-container');
-            let html = '';
-            let themeClass = '';
-
-            if (count >= 0 && count <= 2) {
-                themeClass = 'theme-green';
-                html = `<div class="result-box"><div class="result-count">0 — 2 条</div><div class="result-role">工具型使用者</div><div class="result-desc">AI对你来说是效率工具。<br>使用清醒，边界清晰。</div></div>`;
-            } else if (count >= 3 && count <= 4) {
-                themeClass = 'theme-blue';
-                html = `<div class="result-box"><div class="result-count">3 — 4 条</div><div class="result-role">边界模糊者</div><div class="result-desc">开始出现情感卷入。<br>尚可调整，值得留意。</div></div>`;
-            } else {
-                themeClass = 'theme-red';
-                html = `<div class="result-box"><div class="result-count">5 — 6 条</div><div class="result-role">高依赖风险者</div><div class="result-desc">AI已经嵌入情绪调节系统。<br>需要有意识地「制造摩擦」。</div></div>`;
-            }
-            container.innerHTML = `<div class="${themeClass}">${html}</div>`;
-        }
-
-        // 启动初始化
-        window.onload = init;
+        // 页面加载时初始化
+        window.onload = initApp;
     </script>
 </body>
 </html>
